@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 
 app = FastAPI()
 
-time: datetime = datetime.now(timezone.utc)
 notes = { # Placeholder data
     "data": [
         {
@@ -50,11 +49,11 @@ async def read_notes() -> NotesResponseList: # Placeholder
 async def create_note(note: NoteCreate) -> NoteResponse: # Placeholder
     time: datetime = datetime.now(timezone.utc)
     res: NoteResponse = NoteResponse(
-        id= 1,
-        title= note.title,
-        body= note.body if note.body != None else "",
-        created_at= time,
-        edited_at= time,
+        id=1,
+        title=note.title,
+        body=note.body,
+        created_at=time,
+        edited_at=time,
         tags= []
         )
     return res
@@ -62,16 +61,13 @@ async def create_note(note: NoteCreate) -> NoteResponse: # Placeholder
 @app.patch("/notes/{note_id}")
 async def update_note(note_id: int, note: NoteUpdate) -> NoteResponse: #Placeholder
     time: datetime = datetime.now(timezone.utc)
-    try:
-        for n in notes["data"]:
-            if n["id"] == note_id:
-                stored_item_data = n
-                stored_item_model = NoteResponse(**stored_item_data)
-                update_data = note.model_dump(exclude_unset=True)
-                if update_data: stored_item_model.edited_at = time
-                updated_item = stored_item_model.model_copy(update=update_data)
-                n = jsonable_encoder(updated_item)
-                return updated_item
-    except IndexError:
-        raise HTTPException(404, "Note not found")
+    for index, n in enumerate(notes["data"]):
+        if n["id"] == note_id:
+            stored_item_data = n
+            stored_item_model = NoteResponse(**stored_item_data)
+            update_data = note.model_dump(exclude_unset=True)
+            if update_data: stored_item_model.edited_at = time
+            updated_item = NoteResponse.model_validate({**stored_item_model.model_dump(), **update_data})
+            notes["data"][index] = jsonable_encoder(updated_item)
+            return updated_item
     raise HTTPException(404, "Note not found")

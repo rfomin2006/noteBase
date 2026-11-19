@@ -1,9 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, MISSING
+from pydantic.types import StringConstraints
+from typing import Annotated, TypeAlias
 from datetime import datetime
 
+TitleStr: TypeAlias = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+StrippedStr: TypeAlias = Annotated[str, StringConstraints(strip_whitespace=True)]
+
 class NoteCreate(BaseModel):
-    title: str
-    body: str | None = None
+    title: TitleStr
+    body: StrippedStr | None = None
 
 class TagResponse(BaseModel):
     id: int
@@ -11,15 +16,15 @@ class TagResponse(BaseModel):
 
 class NoteResponse(BaseModel):
     id: int
-    title: str
-    body: str
+    title: TitleStr
+    body: StrippedStr | None
     created_at: datetime
     edited_at: datetime
     tags: list[TagResponse]
 
 class NoteUpdate(BaseModel):
-    title: str | None = None
-    body: str | None = None
+    title: TitleStr | MISSING = MISSING
+    body: StrippedStr | None = None
 
 class NotesResponseList(BaseModel):
     data: list[NoteResponse]
