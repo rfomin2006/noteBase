@@ -10,9 +10,15 @@ class NoteCreate(BaseModel):
     title: TitleStr
     body: StrippedStr | None = None
 
+class TagCreate(BaseModel):
+    name: TitleStr
+
 class TagResponse(BaseModel):
     id: int
-    name: str
+    name: TitleStr
+
+class TagUpdate(BaseModel):
+    name: TitleStr
 
 class NoteResponse(BaseModel):
     id: int
