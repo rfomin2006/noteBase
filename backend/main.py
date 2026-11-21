@@ -34,7 +34,10 @@ notes = { # Placeholder data
             "edited_at": "2020-01-01T00:00:00",
             "tags": []
         }
-    ]
+    ],
+    "total": 120,
+    "offset": 0,
+    "limit": 20
 }
 
 @app.get("/")

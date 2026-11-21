@@ -20,6 +20,9 @@ class TagResponse(BaseModel):
 class TagUpdate(BaseModel):
     name: TitleStr
 
+class TagIdsResponse(BaseModel):
+    tag_ids: list[int]
+
 class NoteResponse(BaseModel):
     id: int
     title: TitleStr
@@ -34,3 +37,6 @@ class NoteUpdate(BaseModel):
 
 class NotesResponseList(BaseModel):
     data: list[NoteResponse]
+    total: int
+    offset: int
+    limit: int
