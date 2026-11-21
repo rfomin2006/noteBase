@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from datetime import datetime, timezone
 
-from ..main import app
+from main import app
 
 client = TestClient(app)
 
@@ -49,12 +49,11 @@ def test_create_note():
     before = datetime.now(timezone.utc)
     response = client.post(
         "/notes/",
-        json={ "id": 4, "title": "Test", "body": "test body" }
+        json={ "title": "Test", "body": "test body" }
     )
     after = datetime.now(timezone.utc)
     data = response.json()
     assert response.status_code == 201
-    assert data["id"] == 4
     assert data["title"] == "Test"
     assert data["body"] == "test body"
     assert before <= data["created_at"] <= after
