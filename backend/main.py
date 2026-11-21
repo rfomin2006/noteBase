@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 app = FastAPI()
 
-notes = { # Placeholder data
+notes = { # Placeholder data, identical with /tests/test_notes.py
     "data": [
         {
             "id": 1,
