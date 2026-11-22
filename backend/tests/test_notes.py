@@ -63,6 +63,110 @@ def test_create_note():
     assert created_at == edited_at
     assert data["tags"] == []
 
+def test_create_note_with_whitespaces():
+    before = datetime.now(timezone.utc)
+    response = client.post(
+        "/notes/",
+        json={ "title": "   Test    ", "body": "test body    " }
+    )
+    after = datetime.now(timezone.utc)
+    data = response.json()
+    created_at = datetime.fromisoformat(data["created_at"])
+    edited_at = datetime.fromisoformat(data["edited_at"])
+    assert response.status_code == 201
+    assert data["title"] == "Test"
+    assert data["body"] == "test body"
+    assert before <= created_at <= after
+    assert before <= edited_at <= after
+    assert created_at == edited_at
+    assert data["tags"] == []
+
+def test_create_note_title_empty():
+    response = client.post(
+        "/notes/",
+        json={ "title": "   ", "body": "test body" }
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["msg"] == "String should have at least 1 character"
+
+def test_create_note_body_empty():
+    before = datetime.now(timezone.utc)
+    response = client.post(
+        "/notes/",
+        json={ "title": "Test", "body": "" }
+    )
+    after = datetime.now(timezone.utc)
+    data = response.json()
+    created_at = datetime.fromisoformat(data["created_at"])
+    edited_at = datetime.fromisoformat(data["edited_at"])
+    assert response.status_code == 201
+    assert data["title"] == "Test"
+    assert data["body"] == ""
+    assert before <= created_at <= after
+    assert before <= edited_at <= after
+    assert created_at == edited_at
+    assert data["tags"] == []
+
+def test_create_note_title_null():
+    response = client.post(
+        "/notes/",
+        json={ "title": None, "body": "test body" }
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["msg"] == "Input should be a valid string"
+
+def test_create_note_body_null():
+    before = datetime.now(timezone.utc)
+    response = client.post(
+        "/notes/",
+        json={ "title": "Test", "body": None }
+    )
+    after = datetime.now(timezone.utc)
+    data = response.json()
+    created_at = datetime.fromisoformat(data["created_at"])
+    edited_at = datetime.fromisoformat(data["edited_at"])
+    assert response.status_code == 201
+    assert data["title"] == "Test"
+    assert data["body"] == None
+    assert before <= created_at <= after
+    assert before <= edited_at <= after
+    assert created_at == edited_at
+    assert data["tags"] == []
+
+def test_create_note_title_missing():
+    response = client.post(
+        "/notes/",
+        json={ "body": "test body" }
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["msg"] == "Field required"
+
+def test_create_note_body_missing():
+    before = datetime.now(timezone.utc)
+    response = client.post(
+        "/notes/",
+        json={ "title": "Test" }
+    )
+    after = datetime.now(timezone.utc)
+    data = response.json()
+    created_at = datetime.fromisoformat(data["created_at"])
+    edited_at = datetime.fromisoformat(data["edited_at"])
+    assert response.status_code == 201
+    assert data["title"] == "Test"
+    assert data["body"] == None
+    assert before <= created_at <= after
+    assert before <= edited_at <= after
+    assert created_at == edited_at
+    assert data["tags"] == []
+
+def test_create_note_empty_request():
+    response = client.post(
+        "/notes/",
+        json={}
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["msg"] == "Field required"
+
 def test_update_note():
     before = datetime.now(timezone.utc)
     response = client.patch(
