@@ -20,7 +20,7 @@ class TagResponse(BaseModel):
 class TagUpdate(BaseModel):
     name: TitleStr
 
-class TagIdsResponse(BaseModel):
+class TagIdsList(BaseModel):
     tag_ids: list[int]
 
 class NoteResponse(BaseModel):
