@@ -115,7 +115,20 @@ def test_update_note_title_null():
     assert response.json()["detail"][0]["msg"] == "Input should be a valid string"
 
 def test_update_note_body_null():
-    pass # TODO!
+    before = datetime.now(timezone.utc)
+    response = client.patch(
+        "/notes/2",
+        json={ "title": "new title", "body": None }
+    )
+    after = datetime.now(timezone.utc)
+    data = response.json()
+    edited_at = datetime.fromisoformat(data["edited_at"])
+    assert response.status_code == 200
+    assert before <= edited_at <= after
+    assert data["id"] == 2
+    assert data["title"] == "new title"
+    assert data["body"] == None
+
 
 def test_update_nonexistent_note():
     response = client.patch(
