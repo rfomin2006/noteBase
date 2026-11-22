@@ -11,8 +11,8 @@ notes = { # Placeholder data, identical with /tests/test_notes.py
             "id": 1,
             "title": "Заголовок",
             "body": "Текст заметки",
-            "created_at": "2020-01-01T00:00:00",
-            "edited_at": "2020-01-01T00:00:00",
+            "created_at": "2020-01-01T00:00:00Z",
+            "edited_at": "2020-01-01T00:00:00Z",
             "tags": [
                 { "id": 1, "name": "Тег1" },
                 { "id": 2, "name": "Тег2" }
@@ -22,16 +22,16 @@ notes = { # Placeholder data, identical with /tests/test_notes.py
             "id": 2,
             "title": "Заголовок",
             "body": "Текст заметки",
-            "created_at": "2020-01-01T00:00:00",
-            "edited_at": "2020-01-01T00:00:00",
+            "created_at": "2020-01-01T00:00:00Z",
+            "edited_at": "2020-01-01T00:00:00Z",
             "tags": []
         },
         {
             "id": 3,
             "title": "Заголовок",
             "body": "Текст заметки",
-            "created_at": "2020-01-01T00:00:00",
-            "edited_at": "2020-01-01T00:00:00",
+            "created_at": "2020-01-01T00:00:00Z",
+            "edited_at": "2020-01-01T00:00:00Z",
             "tags": []
         }
     ],

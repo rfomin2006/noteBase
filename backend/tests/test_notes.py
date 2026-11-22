@@ -11,8 +11,8 @@ notes = notes = {
             "id": 1,
             "title": "Заголовок",
             "body": "Текст заметки",
-            "created_at": "2020-01-01T00:00:00",
-            "edited_at": "2020-01-01T00:00:00",
+            "created_at": "2020-01-01T00:00:00Z",
+            "edited_at": "2020-01-01T00:00:00Z",
             "tags": [
                 { "id": 1, "name": "Тег1" },
                 { "id": 2, "name": "Тег2" }
@@ -22,16 +22,16 @@ notes = notes = {
             "id": 2,
             "title": "Заголовок",
             "body": "Текст заметки",
-            "created_at": "2020-01-01T00:00:00",
-            "edited_at": "2020-01-01T00:00:00",
+            "created_at": "2020-01-01T00:00:00Z",
+            "edited_at": "2020-01-01T00:00:00Z",
             "tags": []
         },
         {
             "id": 3,
             "title": "Заголовок",
             "body": "Текст заметки",
-            "created_at": "2020-01-01T00:00:00",
-            "edited_at": "2020-01-01T00:00:00",
+            "created_at": "2020-01-01T00:00:00Z",
+            "edited_at": "2020-01-01T00:00:00Z",
             "tags": []
         }
     ],
@@ -53,12 +53,14 @@ def test_create_note():
     )
     after = datetime.now(timezone.utc)
     data = response.json()
+    created_at = datetime.fromisoformat(data["created_at"])
+    edited_at = datetime.fromisoformat(data["edited_at"])
     assert response.status_code == 201
     assert data["title"] == "Test"
     assert data["body"] == "test body"
-    assert before <= data["created_at"] <= after
-    assert before <= data["edited_at"] <= after
-    assert data["created_at"] == data["edited_at"]
+    assert before <= created_at <= after
+    assert before <= edited_at <= after
+    assert created_at == edited_at
     assert data["tags"] == []
 
 def test_update_note():
@@ -69,12 +71,12 @@ def test_update_note():
     )
     after = datetime.now(timezone.utc)
     data = response.json()
+    edited_at = datetime.fromisoformat(data["edited_at"])
     assert response.status_code == 200
     assert data["id"] == 2
     assert data["title"] == "new title"
     assert data["body"] == "new body"
-    assert before <= data["created_at"] <= after
-    assert before <= data["edited_at"] <= after
+    assert before <= edited_at <= after
 
 def test_update_note_title_only():
     before = datetime.now(timezone.utc)
@@ -84,11 +86,11 @@ def test_update_note_title_only():
     )
     after = datetime.now(timezone.utc)
     data = response.json()
+    edited_at = datetime.fromisoformat(data["edited_at"])
     assert response.status_code == 200
     assert data["id"] == 2
     assert data["title"] == "new title"
-    assert before <= data["created_at"] <= after
-    assert before <= data["edited_at"] <= after
+    assert before <= edited_at <= after
 
 def test_update_note_body_only():
     before = datetime.now(timezone.utc)
@@ -98,11 +100,11 @@ def test_update_note_body_only():
     )
     after = datetime.now(timezone.utc)
     data = response.json()
+    edited_at = datetime.fromisoformat(data["edited_at"])
     assert response.status_code == 200
     assert data["id"] == 2
     assert data["body"] == "new body"
-    assert before <= data["created_at"] <= after
-    assert before <= data["edited_at"] <= after
+    assert before <= edited_at <= after
 
 def test_update_note_title_null():
     response = client.patch(
