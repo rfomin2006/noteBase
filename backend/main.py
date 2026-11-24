@@ -40,9 +40,11 @@ notes = { # Placeholder data, identical with /tests/test_notes.py
     "limit": 20
 }
 
-@app.get("/")
-async def root():
-    return { "message": "Hello World" }
+@app.get("/notes/{note_id}")
+async def read_note(note_id: int) -> NoteResponse:
+    for n in notes["data"]:
+        if n["id"] == note_id: return NoteResponse.model_validate(n)
+    raise HTTPException(404, "Note not found")
 
 @app.get("/notes/")
 async def read_notes() -> NotesResponseList: # Placeholder
