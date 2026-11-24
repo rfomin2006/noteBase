@@ -17,6 +17,9 @@ class TagResponse(BaseModel):
     id: int
     name: TitleStr
 
+class TagResponseList(BaseModel):
+    data: list[TagResponse]
+
 class TagUpdate(BaseModel):
     name: TitleStr
 
