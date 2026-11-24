@@ -1,6 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
-from schemas import NoteCreate, NoteResponse, NoteUpdate, NotesResponseList
+from schemas import (
+    NoteCreate,
+    NoteUpdate,
+    NoteResponse,
+    NotesResponseList,
+    TagCreate,
+    TagUpdate,
+    TagResponse,
+    TagResponseList,
+)
 from datetime import datetime, timezone
 
 app = FastAPI()
@@ -40,8 +49,15 @@ notes = { # Placeholder data, identical with /tests/test_notes.py
     "limit": 20
 }
 
+tags = {
+    "data": [
+        { "id": 1, "name": "Tag1" },
+        { "id": 2, "name": "Tag2" }
+    ]
+}
+
 @app.get("/notes/{note_id}")
-async def read_note(note_id: int) -> NoteResponse:
+async def read_note(note_id: int) -> NoteResponse: # Placeholder
     for n in notes["data"]:
         if n["id"] == note_id: return NoteResponse.model_validate(n)
     raise HTTPException(404, "Note not found")
@@ -76,3 +92,37 @@ async def update_note(note_id: int, note: NoteUpdate) -> NoteResponse: #Placehol
             notes["data"][index] = jsonable_encoder(updated_item)
             return updated_item
     raise HTTPException(404, "Note not found")
+
+@app.delete("/notes/{note_id}")
+async def delete_note(note_id: int):
+    pass # TODO on database integration
+
+@app.get("/tags/")
+async def read_tags() -> TagResponseList: # Placeholder
+    return TagResponseList.model_validate(tags)
+
+@app.get("/tags/{tag_id}")
+async def read_tag(tag_id: int) -> TagResponse: # Placeholder
+    for tag in tags["data"]:
+        if tag["id"] == tag_id: return TagResponse.model_validate(tag)
+    raise HTTPException(404, "Tag not found")
+
+@app.post("/tags/")
+async def create_tag(tag: TagCreate) -> TagResponse: # Placeholder
+    return TagResponse(id=1, name=tag.name)
+
+@app.patch("/tags/{tad_id}")
+async def update_tag(tag_id: int, tag: TagResponse) -> TagUpdate:
+    for index, tag in enumerate(tags["data"]):
+        if tag["id"] == tag_id:
+            stored_item_data = tag
+            stored_item_model = TagResponse(**stored_item_data)
+            update_data = tag.model_dump(exclude_unset=True)
+            updated_item = TagResponse.model_validate({ **stored_item_model.model_dump(), **update_data })
+            tags["data"][index] = jsonable_encoder(updated_item)
+            return updated_item
+    raise HTTPException(404, "Tag not found")
+
+@app.delete("/tags/{tag_id}")
+async def delete_tag(tag_id: int):
+    pass # TODO on database integration
